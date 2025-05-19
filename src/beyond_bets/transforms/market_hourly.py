@@ -1,10 +1,11 @@
 from pyspark.sql import DataFrame, SparkSession
 from beyond_bets.base.transform import Transform
 from beyond_bets.datasets.bets import Bets
+from beyond_bets.utils.spark_session import get_spark
 from pyspark.sql import functions as F
 
 
-spark = SparkSession.builder.getOrCreate()
+spark = get_spark()
 
 
 class MarketHourly(Transform):
