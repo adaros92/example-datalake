@@ -6,6 +6,7 @@ from beyond_bets.transforms import (
     market_hourly,
     player_daily,
     player_hourly,
+    player_market_daily,
 )
 
 
@@ -81,5 +82,26 @@ def test_player_hourly_transform(spark):
     expected = {
         (1, datetime(2025, 5, 18, 14, 0, 0), 70),
         (2, datetime(2025, 5, 18, 15, 0, 0), 30),
+    }
+    assert output == expected
+
+
+def test_player_market_daily_transform(spark):
+    """Test the PlayerMarketDaily transform class"""
+    rows = [
+        Row(player_id=1, market="MLB", timestamp="2025-05-18T10:15:00", bet_amount=40),
+        Row(player_id=1, market="MLB", timestamp="2025-05-18T21:00:00", bet_amount=60),
+        Row(player_id=2, market="NFL", timestamp="2025-05-18T11:00:00", bet_amount=30),
+        Row(player_id=1, market="NFL", timestamp="2025-05-19T00:15:00", bet_amount=20),
+    ]
+    df = spark.createDataFrame(rows)
+    transform = player_market_daily.PlayerMarketDaily()
+    transform.bets = df
+    result = transform._transformation()
+    output = {tuple(r.asDict().values()) for r in result.collect()}
+    expected = {
+        (1, "MLB", date(2025, 5, 18), 100),
+        (2, "NFL", date(2025, 5, 18), 30),
+        (1, "NFL", date(2025, 5, 19), 20),
     }
     assert output == expected
