@@ -16,7 +16,6 @@ class PlayerDaily(Transform):
         self._inputs = {"bets": Bets()}
 
     def _transformation(self, **kwargs: dict[str, any]) -> DataFrame:
-
         return (
             self.bets.withColumn("date", F.to_date(F.col("timestamp")))
             .groupBy("player_id", "date")
