@@ -18,7 +18,7 @@ class MarketHourly(Transform):
     def _transformation(self, **kwargs: dict[str, any]) -> DataFrame:
 
         return (
-            self.bets.repartition(100)
+            self.bets
             .withColumn("hour", F.date_trunc("hour", F.col("timestamp")))
             .groupBy("market", "hour")
             .agg(F.sum(F.col("bet_amount")).alias("total_bets"))
