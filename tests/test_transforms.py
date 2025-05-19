@@ -1,7 +1,31 @@
 from datetime import date, datetime
 from pyspark.sql import Row
 
-from beyond_bets.transforms import market_hourly, player_daily, player_hourly
+from beyond_bets.transforms import (
+    market_daily,
+    market_hourly,
+    player_daily,
+    player_hourly,
+)
+
+
+def test_market_daily_transform(spark):
+    """Test the MarketDaily transform class"""
+    rows = [
+        Row(market="MLB", timestamp="2025-05-18T10:15:00", bet_amount=40),
+        Row(market="MLB", timestamp="2025-05-18T10:45:00", bet_amount=60),
+        Row(market="NFL", timestamp="2025-05-18T11:05:00", bet_amount=30),
+    ]
+    df = spark.createDataFrame(rows)
+    transform = market_daily.MarketDaily()
+    transform.bets = df
+    result = transform._transformation()
+    output = {tuple(r.asDict().values()) for r in result.collect()}
+    expected = {
+        ("MLB", date(2025, 5, 18), 100),
+        ("NFL", date(2025, 5, 18), 30),
+    }
+    assert output == expected
 
 
 def test_market_hourly_transform(spark):

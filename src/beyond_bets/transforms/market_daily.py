@@ -7,17 +7,17 @@ from pyspark.sql import functions as F
 spark = SparkSession.builder.getOrCreate()
 
 
-class MarketHourly(Transform):
+class MarketDaily(Transform):
 
     def __init__(self):
         super().__init__()
-        self._name: str = "MarketHourly"
+        self._name: str = "MarketDaily"
 
         self._inputs = {"bets": Bets()}
 
     def _transformation(self, **kwargs: dict[str, any]) -> DataFrame:
         return (
-            self.bets.withColumn("hour", F.date_trunc("hour", F.col("timestamp")))
-            .groupBy("market", "hour")
+            self.bets.withColumn("date", F.to_date(F.col("timestamp")))
+            .groupBy("market", "date")
             .agg(F.sum(F.col("bet_amount")).alias("total_bets"))
         )
