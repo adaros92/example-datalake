@@ -23,6 +23,15 @@ To test the install run `hello_world.py` located in the `examples` directory. Yo
 
 You can also run unit tests by running `pytest` at the top level. To run specific tests, you can provide a keyword: `pytest -k daily_transform`. 
 
+## Formatting
+Install pre-commit to run Black on each commit:
+
+`pre-commit install`
+
+Run it on all files without committing:
+
+`pre-commit run --all-files`
+
 ## Problem
 Beyond Bets is a new venture from BeyondTrust to track metrics for sports betting markets. The current codebase works, but the rapid increase in feature requests has left the code in significant need of refactoring. WITHOUT breaking any backwards compatability please add the following new features. It is highly recommended that you improve the codebase as you implement your features.
 

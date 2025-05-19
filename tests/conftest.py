@@ -5,10 +5,9 @@ from pyspark.sql import SparkSession
 @pytest.fixture(scope="session")
 def spark():
     spark = (
-        SparkSession.builder
-        .appName("pytest-spark")
+        SparkSession.builder.appName("pytest-spark")
         .master("local[*]")
-        .config("spark.ui.enabled", "false") 
+        .config("spark.ui.enabled", "false")
         .getOrCreate()
     )
     yield spark
